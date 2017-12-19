@@ -13,7 +13,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let patient of patients.Items">
+      <tr *ngFor="let patient of patients">
         <td>{{ patient.Firstname }}</td>
         <td>{{ patient.Lastname }}</td>
         <td>{{ patient.DateOfBirth | date:'yyyy-MM-dd' }}</td>
@@ -27,4 +27,9 @@
       </tr>
     </tbody>
   </table>
+  <ul class="pagination pagination-lg pull-right">
+    <li *ngFor="let page of pages" class="{{ page == currentPage? 'active' : '' }}">
+      <a (click)="onClick_PageNumber(page)">{{ page }}</a>
+    </li>
+  </ul>
 </div>
