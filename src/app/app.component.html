@@ -13,6 +13,32 @@
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <td>
+          <input type="text" class="form-control" (keyup.enter)="onClick_Search()" [(ngModel)]="firstNameFilter" placeholder="First Name" />
+        </td>
+        <td>
+          <input type="text" class="form-control" (keyup.enter)="onClick_Search()" [(ngModel)]="lastNameFilter" placeholder="Last Name" />
+        </td>
+        <td>
+          <input type="text" class="form-control" (keyup.enter)="onClick_Search()" [(ngModel)]="dateOfBirthFilter" placeholder="Date of Birth" />
+        </td>
+        <td>
+          <input type="text" class="form-control" (keyup.enter)="onClick_Search()" [(ngModel)]="genderFilter" placeholder="Gender" />
+        </td>
+        <td>
+          <input type="text" class="form-control" (keyup.enter)="onClick_Search()" [(ngModel)]="raceFilter" placeholder="Race" />
+        </td>
+        <td>
+          <input type="text" class="form-control" (keyup.enter)="onClick_Search()" [(ngModel)]="medicalSchemeFilter" placeholder="Medical Scheme" />
+        </td>
+        <td>
+
+        </td>
+        <td>
+          <button class="btn btn-primary pull-right btn-action" (click)="onClick_Search()">Search</button>
+        </td>
+      </tr>
       <tr *ngFor="let patient of patients">
         <td>{{ patient.Firstname }}</td>
         <td>{{ patient.Lastname }}</td>

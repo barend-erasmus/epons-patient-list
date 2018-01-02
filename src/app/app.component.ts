@@ -25,7 +25,19 @@ export class AppComponent {
   public currentPage: number = 1;
 
   public pageSize: number = 3;
-  
+
+  public firstNameFilter = null;
+
+  public lastNameFilter = null;
+
+  public dateOfBirthFilter = null;
+
+  public genderFilter = null;
+
+  public raceFilter = null;
+
+  public medicalSchemeFilter = null;
+
   constructor(private http: Http, private el: ElementRef) {
 
   }
@@ -38,7 +50,17 @@ export class AppComponent {
   public onClick_PageNumber(page: number): void {
     this.currentPage = page;
 
-    if (this.permission === 'Case Manager') {
+    if (this.permission.Permission.Name === 'Case Manager') {
+      this.loadActivePatients(null, this.facilityId);
+    } else {
+      this.loadActivePatients(this.user.Id, this.facilityId);
+    }
+  }
+
+  public onClick_Search(): void {
+    this.currentPage = 1;
+
+    if (this.permission.Permission.Name === 'Case Manager') {
       this.loadActivePatients(null, this.facilityId);
     } else {
       this.loadActivePatients(this.user.Id, this.facilityId);
@@ -57,7 +79,7 @@ export class AppComponent {
 
       this.permission = this.user.Permissions.find((x) => x.Facility.Id === this.facilityId);
 
-      if (this.permission === 'Case Manager') {
+      if (this.permission.Permission.Name === 'Case Manager') {
         this.loadActivePatients(null, this.facilityId);
       } else {
         this.loadActivePatients(userId, this.facilityId);
@@ -67,7 +89,7 @@ export class AppComponent {
 
   private loadActivePatients(userId: string, facilityId: string): void {
 
-    this.get(`/api/Patient/List?userId=${userId}&type=0&start=${(this.currentPage - 1) * this.pageSize}&end=${this.currentPage * this.pageSize}&facilityId=${facilityId}`).map((x) => {
+    this.get(`/api/Patient/List?userId=${userId}&type=0&start=${(this.currentPage - 1) * this.pageSize}&end=${this.currentPage * this.pageSize}&facilityId=${facilityId}&firstName=${this.firstNameFilter ? this.firstNameFilter : ''}&lastName=${this.lastNameFilter ? this.lastNameFilter : ''}&dateOfBirth=${this.dateOfBirthFilter ? this.dateOfBirthFilter : ''}&gender=${this.genderFilter ? this.genderFilter : ''}&race=${this.raceFilter ? this.raceFilter : ''}&medicalScheme=${this.medicalSchemeFilter ? this.medicalSchemeFilter : ''}`).map((x) => {
       const json: any = x.json();
       return json;
     }).subscribe((json) => {
