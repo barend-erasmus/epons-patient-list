@@ -89,7 +89,7 @@ export class AppComponent {
 
   private loadActivePatients(userId: string, facilityId: string): void {
 
-    this.get(`/api/Patient/List?userId=${userId}&type=0&start=${(this.currentPage - 1) * this.pageSize}&end=${this.currentPage * this.pageSize}&facilityId=${facilityId}&firstName=${this.firstNameFilter ? this.firstNameFilter : ''}&lastName=${this.lastNameFilter ? this.lastNameFilter : ''}&dateOfBirth=${this.dateOfBirthFilter ? this.dateOfBirthFilter : ''}&gender=${this.genderFilter ? this.genderFilter : ''}&race=${this.raceFilter ? this.raceFilter : ''}&medicalScheme=${this.medicalSchemeFilter ? this.medicalSchemeFilter : ''}`).map((x) => {
+    this.get(`/api/Patient/List?userId=${userId}&type=0&start=${(this.currentPage - 1) * this.pageSize}&end=${this.currentPage * this.pageSize}&facilityId=${facilityId}&firstName=${this.firstNameFilter ? this.firstNameFilter : ''}&lastName=${this.lastNameFilter ? this.lastNameFilter : ''}&dateOfBirth=${this.dateOfBirthFilter ? this.dateOfBirthFilter : ''}&gender=${this.genderFilter ? this.genderFilter : ''}&race=${this.raceFilter ? this.raceFilter : ''}&medicalScheme=${this.medicalSchemeFilter ? this.medicalSchemeFilter : ''}&superAdmin=${this.user.IsSuperAdmin}`).map((x) => {
       const json: any = x.json();
       return json;
     }).subscribe((json) => {
