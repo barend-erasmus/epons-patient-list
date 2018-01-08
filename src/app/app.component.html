@@ -45,7 +45,7 @@
         <td>{{ patient.DateOfBirth | date:'yyyy-MM-dd' }}</td>
         <td class="hidden-sm hidden-xs">{{ patient.Gender?.Name }}</td>
         <td class="hidden-sm hidden-xs">{{ patient.Race?.Name }}</td>
-        <td class="hidden-sm hidden-xs">{{ patient.MedicalSchemeDetails.MedicalScheme.Name }}</td>
+        <td class="hidden-sm hidden-xs">{{ patient.MedicalSchemeDetails.MedicalScheme?.Name }}</td>
         <td class="hidden-sm hidden-xs">{{ patient.FacilitiesName }}</td>
         <td>
           <a href="/Patient/Edit?patientId={{patient.Id}}" class="btn btn-primary pull-right btn-action">Edit</a>
