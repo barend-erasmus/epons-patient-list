@@ -51,9 +51,9 @@ export class AppComponent {
     this.currentPage = page;
 
     if (this.permission.Permission.Name === 'Case Manager') {
-      this.loadActivePatients(null, this.facilityId);
+      this.loadActivePatients(null, this.user.IsSuperAdmin? null : this.facilityId);
     } else {
-      this.loadActivePatients(this.user.Id, this.facilityId);
+      this.loadActivePatients(this.user.Id, this.user.IsSuperAdmin? null : this.facilityId);
     }
   }
 
@@ -61,9 +61,9 @@ export class AppComponent {
     this.currentPage = 1;
 
     if (this.permission.Permission.Name === 'Case Manager') {
-      this.loadActivePatients(null, this.facilityId);
+      this.loadActivePatients(null, this.user.IsSuperAdmin? null : this.facilityId);
     } else {
-      this.loadActivePatients(this.user.Id, this.facilityId);
+      this.loadActivePatients(this.user.Id, this.user.IsSuperAdmin? null : this.facilityId);
     }
   }
 
@@ -80,9 +80,9 @@ export class AppComponent {
       this.permission = this.user.Permissions.find((x) => x.Facility.Id === this.facilityId);
 
       if (this.permission.Permission.Name === 'Case Manager') {
-        this.loadActivePatients(null, this.facilityId);
+        this.loadActivePatients(null, this.user.IsSuperAdmin? null : this.facilityId);
       } else {
-        this.loadActivePatients(userId, this.facilityId);
+        this.loadActivePatients(userId, this.user.IsSuperAdmin? null : this.facilityId);
       }
     });
   }
