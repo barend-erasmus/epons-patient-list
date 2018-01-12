@@ -8,41 +8,45 @@ import { Observable } from 'rxjs/Observable';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  private baseUri: string = 'http://api.sadfm.co.za';
+export class AppComponent implements OnInit {
+  private baseUri = 'http://api.sadfm.co.za';
   // private baseUri: string = 'http://localhost:4484';
 
-  public user: any = {};
+  public currentPage = 1;
 
-  public permission: any = {};
+  public dateOfBirthFilter: string = null;
 
   public facilityId: string;
 
-  public patients: any[] = [];
+  public firstNameFilter: string = null;
+
+  public genderFilter: string = null;
+
+  public lastNameFilter: string = null;
+
+  public medicalSchemeFilter: string = null;
+
+  public pageSize = 10;
 
   public pages: number[] = [];
 
-  public currentPage: number = 1;
+  public patients: any[] = [];
 
-  public pageSize: number = 10;
+  public permission: any = {};
 
-  public firstNameFilter = null;
+  public raceFilter: string = null;
 
-  public lastNameFilter = null;
+  public type: string = null;
 
-  public dateOfBirthFilter = null;
-
-  public genderFilter = null;
-
-  public raceFilter = null;
-
-  public medicalSchemeFilter = null;
+  public user: any = {};
 
   constructor(private http: Http, private el: ElementRef) {
 
   }
 
   public ngOnInit(): void {
+    this.type = this.el.nativeElement.getAttribute('type');
+
     const userId = this.el.nativeElement.getAttribute('userId');
     this.loadUser(userId);
   }
@@ -51,9 +55,9 @@ export class AppComponent {
     this.currentPage = page;
 
     if (this.permission.Permission.Name === 'Case Manager') {
-      this.loadActivePatients(null, this.user.IsSuperAdmin? null : this.facilityId);
+      this.loadPatients(null, this.user.IsSuperAdmin ? null : this.facilityId);
     } else {
-      this.loadActivePatients(this.user.Id, this.user.IsSuperAdmin? null : this.facilityId);
+      this.loadPatients(this.user.Id, this.user.IsSuperAdmin ? null : this.facilityId);
     }
   }
 
@@ -61,35 +65,15 @@ export class AppComponent {
     this.currentPage = 1;
 
     if (this.permission.Permission.Name === 'Case Manager') {
-      this.loadActivePatients(null, this.user.IsSuperAdmin? null : this.facilityId);
+      this.loadPatients(null, this.user.IsSuperAdmin ? null : this.facilityId);
     } else {
-      this.loadActivePatients(this.user.Id, this.user.IsSuperAdmin? null : this.facilityId);
+      this.loadPatients(this.user.Id, this.user.IsSuperAdmin ? null : this.facilityId);
     }
   }
 
-  private loadUser(userId: string): void {
+  private loadPatients(userId: string, facilityId: string): void {
 
-    this.get(`/api/User/FindById/${userId}`).map((x) => {
-      const json: any = x.json();
-      return json;
-    }).subscribe((json) => {
-      this.user = json;
-
-      this.facilityId = this.el.nativeElement.getAttribute('facilityId');
-
-      this.permission = this.user.Permissions.find((x) => x.Facility.Id === this.facilityId);
-
-      if (this.permission.Permission.Name === 'Case Manager') {
-        this.loadActivePatients(null, this.user.IsSuperAdmin? null : this.facilityId);
-      } else {
-        this.loadActivePatients(userId, this.user.IsSuperAdmin? null : this.facilityId);
-      }
-    });
-  }
-
-  private loadActivePatients(userId: string, facilityId: string): void {
-
-    this.get(`/api/Patient/List?userId=${userId}&type=0&start=${(this.currentPage - 1) * this.pageSize}&end=${this.currentPage * this.pageSize}&facilityId=${facilityId}&firstName=${this.firstNameFilter ? this.firstNameFilter : ''}&lastName=${this.lastNameFilter ? this.lastNameFilter : ''}&dateOfBirth=${this.dateOfBirthFilter ? this.dateOfBirthFilter : ''}&gender=${this.genderFilter ? this.genderFilter : ''}&race=${this.raceFilter ? this.raceFilter : ''}&medicalScheme=${this.medicalSchemeFilter ? this.medicalSchemeFilter : ''}&superAdmin=${this.user.IsSuperAdmin}`).map((x) => {
+    this.get(`/api/Patient/List?userId=${userId}&type=${this.type === 'active' ? 0 : (this.type === 'discharged' ? 1 : (this.type === 'deceased' ? 3 : 0))}&start=${(this.currentPage - 1) * this.pageSize}&end=${this.currentPage * this.pageSize}&facilityId=${facilityId}&firstName=${this.firstNameFilter ? this.firstNameFilter : ''}&lastName=${this.lastNameFilter ? this.lastNameFilter : ''}&dateOfBirth=${this.dateOfBirthFilter ? this.dateOfBirthFilter : ''}&gender=${this.genderFilter ? this.genderFilter : ''}&race=${this.raceFilter ? this.raceFilter : ''}&medicalScheme=${this.medicalSchemeFilter ? this.medicalSchemeFilter : ''}&superAdmin=${this.user.IsSuperAdmin}`).map((x) => {
       const json: any = x.json();
       return json;
     }).subscribe((json) => {
@@ -108,18 +92,23 @@ export class AppComponent {
     });
   }
 
-  protected post(uri: string, obj: any): Observable<Response> {
-    const headers = new Headers();
-    headers.append('apikey', '2c0d64c1-d002-45f2-9dc4-784c24e996');
+  private loadUser(userId: string): void {
 
-    const jwtToken = localStorage.getItem('jwt.token');
+    this.get(`/api/User/FindById/${userId}`).map((x) => {
+      const json: any = x.json();
+      return json;
+    }).subscribe((json) => {
+      this.user = json;
 
-    if (jwtToken !== null || jwtToken === '') {
-      headers.append('Authorization', 'Bearer ' + jwtToken);
-    }
+      this.facilityId = this.el.nativeElement.getAttribute('facilityId');
 
-    return this.http.post(`${this.baseUri}${uri}`, obj, {
-      headers,
+      this.permission = this.user.Permissions.find((x) => x.Facility.Id === this.facilityId);
+
+      if (this.permission.Permission.Name === 'Case Manager') {
+        this.loadPatients(null, this.user.IsSuperAdmin ? null : this.facilityId);
+      } else {
+        this.loadPatients(userId, this.user.IsSuperAdmin ? null : this.facilityId);
+      }
     });
   }
 
@@ -134,6 +123,21 @@ export class AppComponent {
     }
 
     return this.http.get(`${this.baseUri}${uri}`, {
+      headers,
+    });
+  }
+
+  protected post(uri: string, obj: any): Observable<Response> {
+    const headers = new Headers();
+    headers.append('apikey', '2c0d64c1-d002-45f2-9dc4-784c24e996');
+
+    const jwtToken = localStorage.getItem('jwt.token');
+
+    if (jwtToken !== null || jwtToken === '') {
+      headers.append('Authorization', 'Bearer ' + jwtToken);
+    }
+
+    return this.http.post(`${this.baseUri}${uri}`, obj, {
       headers,
     });
   }
