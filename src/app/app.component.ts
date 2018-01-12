@@ -73,7 +73,7 @@ export class AppComponent implements OnInit {
 
   private loadPatients(userId: string, facilityId: string): void {
 
-    this.get(`/api/Patient/List?userId=${userId}&type=${this.type === 'active' ? 0 : (this.type === 'discharged' ? 1 : (this.type === 'deceased' ? 3 : 0))}&start=${(this.currentPage - 1) * this.pageSize}&end=${this.currentPage * this.pageSize}&facilityId=${facilityId}&firstName=${this.firstNameFilter ? this.firstNameFilter : ''}&lastName=${this.lastNameFilter ? this.lastNameFilter : ''}&dateOfBirth=${this.dateOfBirthFilter ? this.dateOfBirthFilter : ''}&gender=${this.genderFilter ? this.genderFilter : ''}&race=${this.raceFilter ? this.raceFilter : ''}&medicalScheme=${this.medicalSchemeFilter ? this.medicalSchemeFilter : ''}&superAdmin=${this.user.IsSuperAdmin}`).map((x) => {
+    this.get(`/api/Patient/List?userId=${userId}&type=${this.type === 'active' ? 1 : (this.type === 'discharged' ? 2 : (this.type === 'deceased' ? 3 : 0))}&start=${(this.currentPage - 1) * this.pageSize}&end=${this.currentPage * this.pageSize}&facilityId=${facilityId}&firstName=${this.firstNameFilter ? this.firstNameFilter : ''}&lastName=${this.lastNameFilter ? this.lastNameFilter : ''}&dateOfBirth=${this.dateOfBirthFilter ? this.dateOfBirthFilter : ''}&gender=${this.genderFilter ? this.genderFilter : ''}&race=${this.raceFilter ? this.raceFilter : ''}&medicalScheme=${this.medicalSchemeFilter ? this.medicalSchemeFilter : ''}&superAdmin=${this.user.IsSuperAdmin}`).map((x) => {
       const json: any = x.json();
       return json;
     }).subscribe((json) => {
